@@ -1,0 +1,22 @@
+services:
+  db:
+    image: postgres:18.1
+    restart: unless-stopped
+    env_file:
+      - .env.postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgres-sakila-db/postgres-sakila-schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
+      - ./postgres-sakila-db/postgres-sakila-insert-data.sql:/docker-entrypoint-initdb.d/02-data.sql
+
+  pgadmin:
+    image: dpage/pgadmin4:9.11.0
+    container_name: pgadmin
+    env_file:
+      - .env.pgadmin
+    ports:
+      - "8888:80"
+    depends_on:
+      - db
+    restart: unless-stopped
